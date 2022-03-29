@@ -4,10 +4,10 @@
 // import { getFirestore, doc, getDoc, setDoc, collection, } from "firebase/firestore";
 
 // import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-import firebase from 'firebase/app';
+import firebase from "firebase/app"
+import "firebase/auth"
+import "firebase/firestore"
 
-import 'firebase/firestore';
-import 'firebase/auth';
 
 
 const config = {

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
+import { connect } from 'react-redux';
 import './App.css';
 
 import HomePage from './pages/homepage/homepage.component';
@@ -8,36 +9,31 @@ import Header from './components/header/header.component';
 import SignInAndSignUpPage from './pages/sign-in-and-sign-up/sign-in-and-sign-up.component';
 import { auth, createUserProfileDocument } from './firebase/firebase.utils';
 
-
+import { setCurrentUser } from './redux/user/user.actions';
 
 class App extends React.Component {
-  constructor() {
-    super();
 
-    this.state = {
-      currentUser: null
-    }
-  }
   unsubscribeFromAuth = null;
 
 
   componentDidMount() {
+
+    const { setCurrentUser } = this.props;
     this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
       if (userAuth) {
         const userRef = await createUserProfileDocument(userAuth);
 
         userRef.onSnapshot(snapShot => {
-          this.setState({
-            currentUser: {
-              id: snapShot.id,
-              ...snapShot.data()
-            }
+          setCurrentUser({
+            id: snapShot.id,
+            ...snapShot.data()
+
           });
-         
+
         });
       }
 
-      this.setState({ currentUser: userAuth });
+      setCurrentUser(userAuth);
     });
   }
   componentWillUnmount() {
@@ -46,7 +42,7 @@ class App extends React.Component {
   render() {
     return (
       <div >
-        <Header currentUser={this.state.currentUser} />
+        <Header />
         <Routes>
           <Route path='/' element={<HomePage />} />
           <Route path='/shop' element={<ShopPage />} />
@@ -57,19 +53,8 @@ class App extends React.Component {
   }
 }
 
+const mapDispatchToProps = dispatch => ({
+  setCurrentUser: user => dispatch(setCurrentUser(user))
+})
 
-// function App(props) {
-//   return (
-
-//     <div >
-//       <Header />
-//       <Routes>
-//         <Route path='/' element={<HomePage />} />
-//         <Route path='/shop' element={<ShopPage />} />
-//         <Route path='/signin' element={<SignInAndSignUpPage />} />
-//       </Routes>
-//     </div>
-//   );
-// }
-
-export default App;
+export default connect(null, mapDispatchToProps)(App);
