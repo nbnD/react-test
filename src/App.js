@@ -6,12 +6,16 @@ import { createStructuredSelector } from 'reselect';
 import HomePage from './pages/homepage/homepage.component';
 import ShopPage from './pages/shop/shop.component';
 import Header from './components/header/header.component';
+import CollectionsOverview from './components/collections-overview/collections-overview.component';
+import CollectionPage from './pages/collection/collection.component';
 import SignInAndSignUpPage from './pages/sign-in-and-sign-up/sign-in-and-sign-up.component';
 import { auth, createUserProfileDocument } from './firebase/firebase.utils';
 
 import { setCurrentUser } from './redux/user/user.actions';
 import { selectCurrentUser } from './redux/user/user.selector';
 import CheckoutPage from './pages/checkout/checkout.component';
+import Directory from './components/directory/directory.components';
+
 
 class App extends React.Component {
 
@@ -42,21 +46,24 @@ class App extends React.Component {
     this.unsubscribeFromAuth();
   }
   render() {
-    console.log("currentUser");
-    console.log(this.props.user);
+
     return (
       <div >
         <Header />
         <Routes>
-          <Route path='/' element={<HomePage />} />
-          <Route path='/shop' element={<ShopPage />} />
+          <Route path='/' element={<HomePage />} >
+          
+          </Route>
+          <Route path='/shop/*' element={<ShopPage />}>
+            <Route index element={<CollectionsOverview />} />
+            <Route path=":collectionId" element={<CollectionPage />} />
+          </Route>
           <Route path='/checkout' element={<CheckoutPage />} />
           <Route path='/signin' element={<>
             {this.props.currentUser ?
               <Navigate to="/" />
               :
               <SignInAndSignUpPage />
-
             }
           </>
           }
@@ -64,7 +71,8 @@ class App extends React.Component {
           />
 
           <Route path='/signin' element={this.props.user ? <Navigate to="/" /> : <SignInAndSignUpPage />} />
-          {/* {this.props.user}?   <Route path='/' element={<HomePage />} /> : <Route path='/signin' element={<SignInAndSignUpPage />} /> */}
+
+
         </Routes>
       </div>
     );

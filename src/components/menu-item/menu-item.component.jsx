@@ -7,6 +7,7 @@ const MenuItem = ({ title, imageUrl, subtitle, size,linkUrl }) => {
     let navigate = useNavigate();
 
     let { pathname } = useLocation();
+    console.log(pathname);
     return(
     
     <div className={`${size} menu-item`} onClick={() => navigate(`${pathname}${linkUrl}`)}>
