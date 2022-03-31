@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from 'react-redux';
 import { createStructuredSelector } from "reselect";
 
-import { useLocation, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 
 import CustomButton from '../custom-button/custom-button.component';
 import CartItem from '../cart-item/cart-item.component';
@@ -13,7 +13,8 @@ import './cart-dropdown.styles.scss';
 const CartDropdown = ({ cartItems }) => {
     let navigate = useNavigate();
 
-    let { pathname } = useLocation();
+  
+
     return (
 
         <div className="cart-dropdown">
