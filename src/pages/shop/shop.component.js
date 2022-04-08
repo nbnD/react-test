@@ -1,65 +1,47 @@
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { updateCollections } from '../../redux/shop/shop.actions';
-import WithSpinner from '../../components/with-spinner/with-spinner.component';
-import CollectionsOverview from '../../components/collections-overview/collections-overview.component';
-import CollectionPage from '../collection/collection.component';
 
-import { firestore, convertCollectionsSnapShotToMap } from '../../firebase/firebase.utils';
+import { fetchCollectionsStart } from '../../redux/shop/shop.actions';
+// import { fetchCollectionsStart } from '../../redux/shop/shop.sagas';
+import CollectionsOverviewContainer from '../../components/collections-overview/collections-overview.container';
+import CollectionsPageContainer from '../collection/collection.container';
 
-const CollectionsOverviewWithSnpiiner=WithSpinner(CollectionsOverview);
-const CollectionsPageWithSpinner=WithSpinner(CollectionPage);
+
 class ShopPage extends React.Component {
 
-
-  state = {
-    loading: true,
-  };
-
-  unsubscribeFromSnapshot = null;
-
   componentDidMount() {
-    const { updateCollections } = this.props;
-    const collectionRef = firestore.collection('collections');
-    // this.unsubscribeFromSnapshot = collectionRef.onSnapshot(async snapShopt => {
-    //   const collectionsMap = convertCollectionsSnapShotToMap(snapShopt);
-    //   updateCollections(collectionsMap);
-    //   this.setState({loading:false});
+    //for thunk
+    // const { fetchCollectionsStartAsync } = this.props;
+    // fetchCollectionsStartAsync();
+    //for thunk 
 
-    // })
-// fetch('https://firestore.googleapis.com/v1/projects/thegadgetsnepal-db/databases/(default)/documents/collections')
-// .then(response=>response.json())
-// .then(collections=>console.log("collections",collections));
-
-     collectionRef.get().then(
-      async snapShopt => {
-        const collectionsMap = convertCollectionsSnapShotToMap(snapShopt);
-        updateCollections(collectionsMap);
-        this.setState({loading:false});
-  
-      }
-     )
-    
+    //for saga
+    const { fetchCollectionsStart } = this.props;
+    fetchCollectionsStart();
   }
 
   render() {
-    const {loading}=this.state;
+   
     return (
       <div className='shop-page'>
         <Routes>
-           <Route path="/" element={<CollectionsOverviewWithSnpiiner isLoading={loading} />} />
-           {/* <Route path="/" element={<CollectionsOverview />} /> */}
-         
-          <Route path=":collectionId" element={<CollectionsPageWithSpinner isLoading={loading} collectionId={this.props.collections.collectionId}  />} />
+          {/* <Route path="/" element={<CollectionsOverviewWithSnpiiner isLoading={!isCollectionsLoaded} />} /> */}
+          <Route path="/" element={<CollectionsOverviewContainer/>} />
+          <Route path=":collectionId" element={<CollectionsPageContainer collectionId={this.props.collections.collectionId}/>} />
+          {/* <Route path=":collectionId" element={<CollectionsPageWithSpinner isLoading={!isCollectionsLoaded} collectionId={this.props.collections.collectionId} />} /> */}
         </Routes>
       </div>
     )
   }
 }
+
 const mapDispatchToProps = dispatch => ({
-  updateCollections: collectionsMap => dispatch(updateCollections(collectionsMap))
+  //for thunk
+  // fetchCollectionsStartAsync: () => dispatch(fetchCollectionsStartAsync())
+  // for thunk
+
+  //for saga
+  fetchCollectionsStart: () => dispatch(fetchCollectionsStart())
 })
-
-
 export default connect(null, mapDispatchToProps)(ShopPage);

@@ -6,12 +6,13 @@ import './collection.styles.scss';
 
 
 const CollectionPage = ({ collection }) => {
+   
     const { title, items } = collection;
     return (
         <div className="collection-page">
             <h2 title="title"> {title}</h2>
             <div className="items">
-                {items.map(item=>(
+                {items.map(item => (
                     <CollectionItemComponent key={item.id} item={item} />
                 ))}
             </div>
@@ -19,9 +20,6 @@ const CollectionPage = ({ collection }) => {
     )
 };
 const mapStateToProps = (state, ownProps) => {
-
-    return {
-        collection: selectCollection(ownProps.collectionId)(state)
-    }
+      return { collection: selectCollection(ownProps.collectionId)(state) }
 };
 export default connect(mapStateToProps)(CollectionPage);
