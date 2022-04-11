@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { connect } from 'react-redux';
 import './App.css';
@@ -13,51 +13,45 @@ import CheckoutPage from './pages/checkout/checkout.component';
 import { checkUserSession } from './redux/user/user.actions';
 import { selectCurrentUser } from './redux/user/user.selector';
 
-class App extends React.Component {
+const App = ({ checkUserSession, currentUser }) => {
 
-  unsubscribeFromAuth = null;
+  // unsubscribeFromAuth = null;
 
-
-  componentDidMount() {
-    const { checkUserSession }=this.props;
+  useEffect(() => {
     checkUserSession();
+  }, [checkUserSession])
 
-   
-  }
-  componentWillUnmount() {
-    this.unsubscribeFromAuth();
-  }
-  render() {
 
-    return (
-      <div >
-        <Header />
-        <Routes>
-          <Route path='/' element={<HomePage />} >
-          </Route>
-          <Route path='/shop/*' element={<FunctionalShopPage />}>
-            <Route index element={<ShopPage />} />
-            <Route path=":collectionId" element={<CollectionsPageContainer />} />
-          </Route>
-          <Route path='/checkout' element={<CheckoutPage />} />
-          <Route path='/signin' element={<>
-            {this.props.currentUser ?
-              <Navigate to="/" />
-              :
-              <SignInAndSignUpPage />
-            }
-          </>
+
+  return (
+    <div >
+      <Header />
+      <Routes>
+        <Route path='/' element={<HomePage />} >
+        </Route>
+        <Route path='/shop/*' element={<FunctionalShopPage />}>
+          <Route index element={<ShopPage />} />
+          <Route path=":collectionId" element={<CollectionsPageContainer />} />
+        </Route>
+        <Route path='/checkout' element={<CheckoutPage />} />
+        <Route path='/signin' element={<>
+          {currentUser ?
+            <Navigate to="/" />
+            :
+            <SignInAndSignUpPage />
           }
+        </>
+        }
 
-          />
-          <Route path='/signin' element={this.props.user ? <Navigate to="/" /> : <SignInAndSignUpPage />} />
+        />
+        <Route path='/signin' element={currentUser ? <Navigate to="/" /> : <SignInAndSignUpPage />} />
 
 
-        </Routes>
-      </div>
-    );
-  }
+      </Routes>
+    </div>
+  );
 }
+
 const mapStateToProps = createStructuredSelector({
   currentUser: selectCurrentUser,
 })

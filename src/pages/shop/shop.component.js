@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { connect } from 'react-redux';
 
@@ -8,40 +8,28 @@ import CollectionsOverviewContainer from '../../components/collections-overview/
 import CollectionsPageContainer from '../collection/collection.container';
 
 
-class ShopPage extends React.Component {
+const ShopPage = ({ fetchCollectionsStart, collections }) => {
 
-  componentDidMount() {
-    //for thunk
-    // const { fetchCollectionsStartAsync } = this.props;
-    // fetchCollectionsStartAsync();
-    //for thunk 
-
-    //for saga
-    const { fetchCollectionsStart } = this.props;
+  useEffect(() => {
     fetchCollectionsStart();
-  }
+  }, [fetchCollectionsStart])
 
-  render() {
-   
-    return (
-      <div className='shop-page'>
-        <Routes>
-          {/* <Route path="/" element={<CollectionsOverviewWithSnpiiner isLoading={!isCollectionsLoaded} />} /> */}
-          <Route path="/" element={<CollectionsOverviewContainer/>} />
-          <Route path=":collectionId" element={<CollectionsPageContainer collectionId={this.props.collections.collectionId}/>} />
-          {/* <Route path=":collectionId" element={<CollectionsPageWithSpinner isLoading={!isCollectionsLoaded} collectionId={this.props.collections.collectionId} />} /> */}
-        </Routes>
-      </div>
-    )
-  }
+  return (
+    <div className='shop-page'>
+      <Routes>
+        {/* <Route path="/" element={<CollectionsOverviewWithSnpiiner isLoading={!isCollectionsLoaded} />} /> */}
+        <Route path="/" element={<CollectionsOverviewContainer />} />
+        <Route path=":collectionId" element={<CollectionsPageContainer collectionId={collections.collectionId} />} />
+        {/* <Route path=":collectionId" element={<CollectionsPageWithSpinner isLoading={!isCollectionsLoaded} collectionId={this.props.collections.collectionId} />} /> */}
+      </Routes>
+    </div>
+  )
+
 }
 
-const mapDispatchToProps = dispatch => ({
-  //for thunk
-  // fetchCollectionsStartAsync: () => dispatch(fetchCollectionsStartAsync())
-  // for thunk
 
-  //for saga
+const mapDispatchToProps = dispatch => ({
+
   fetchCollectionsStart: () => dispatch(fetchCollectionsStart())
 })
 export default connect(null, mapDispatchToProps)(ShopPage);
